@@ -217,20 +217,24 @@ class DefaultsManager {
         }
     }
     
-    @objc func setColor(_ color: NSColor, key: String) {
+    func setColor(_ color: NSColor, key: String) {
         do {
             try defaults.set(NSKeyedArchiver.archivedData(withRootObject: color, requiringSecureCoding: true), forKey: key)
         } catch _ {
-            fatalError("something bad happened")
+            fatalError("failed to set the color")
         }
         
         defaults.synchronize()
     }
     
-    @objc func getColor(_ key: String) -> NSColor? {
+    func getColor(_ key: String) -> NSColor? {
         if let canvasColorData = defaults.object(forKey: key) as? Data {
-            // TODO this one still needs to be fixed
-            return NSKeyedUnarchiver.unarchiveObject(with: canvasColorData) as? NSColor
+            do {
+                return try NSKeyedUnarchiver.unarchivedObject(ofClasses: [], from: canvasColorData) as? NSColor
+            } catch _ {
+                fatalError("failed to get the color")
+            }
+            
         }
         return nil;
     }
