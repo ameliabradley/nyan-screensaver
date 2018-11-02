@@ -31,13 +31,13 @@ class SwiftSS: ScreenSaverView {
         scene.nextResponder = self
     }
     
-    override func hasConfigureSheet() -> Bool {
+    public func hasConfigureSheet() -> Bool {
         // Ideally I'd like a configuration sheet to show up
         // with different options for heads
         return false
     }
     
-    override func configureSheet() -> NSWindow? {
+    public func configureSheet() -> NSWindow? {
         return sheetController.window
     }
 }

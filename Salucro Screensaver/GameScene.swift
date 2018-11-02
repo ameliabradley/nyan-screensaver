@@ -217,13 +217,19 @@ class DefaultsManager {
         }
     }
     
-    func setColor(_ color: NSColor, key: String) {
-        defaults.set(NSKeyedArchiver.archivedData(withRootObject: color), forKey: key)
+    @objc func setColor(_ color: NSColor, key: String) {
+        do {
+            try defaults.set(NSKeyedArchiver.archivedData(withRootObject: color, requiringSecureCoding: true), forKey: key)
+        } catch _ {
+            fatalError("something bad happened")
+        }
+        
         defaults.synchronize()
     }
     
-    func getColor(_ key: String) -> NSColor? {
+    @objc func getColor(_ key: String) -> NSColor? {
         if let canvasColorData = defaults.object(forKey: key) as? Data {
+            // TODO this one still needs to be fixed
             return NSKeyedUnarchiver.unarchiveObject(with: canvasColorData) as? NSColor
         }
         return nil;
@@ -279,8 +285,8 @@ class ConfigureSheetController: NSWindowController {
         }
     }*/
     
-    override var windowNibName: String {
-        return "ConfigureSheet"
+    override var windowNibName: NSNib.Name {
+        return NSNib.Name(rawValue: "ConfigureSheet")
     }
     
     override func windowDidLoad() {
